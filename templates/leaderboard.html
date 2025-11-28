@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Classement - PointsShop{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Classement Mensuel</h1>
+    <p class="text-gray-600 mb-8">Les 10 premiers gagnent des récompenses à la fin du mois!</p>
+    
+    <div class="bg-white rounded-lg shadow-md overflow-hidden max-w-2xl mx-auto">
+        <div class="bg-blue-600 text-white px-6 py-4">
+            <h2 class="text-xl font-semibold">Top 10 du Mois</h2>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+            {% for user in top_users %}
+            <div class="flex items-center justify-between px-6 py-4 
+                {% if forloop.counter == 1 %}bg-yellow-50
+                {% elif forloop.counter == 2 %}bg-gray-50
+                {% elif forloop.counter == 3 %}bg-orange-50
+                {% endif %}">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 
+                        {% if forloop.counter == 1 %}bg-yellow-500
+                        {% elif forloop.counter == 2 %}bg-gray-400
+                        {% elif forloop.counter == 3 %}bg-orange-500
+                        {% else %}bg-blue-200{% endif %} 
+                        rounded-full flex items-center justify-center text-white font-bold mr-4">
+                        {{ forloop.counter }}
+                    </div>
+                    <span class="{% if forloop.counter == 1 %}font-semibold{% endif %}">
+                        {{ user.username }}
+                    </span>
+                </div>
+                <span class="{% if forloop.counter == 1 %}font-bold text-lg{% else %}font-semibold{% endif %}">
+                    {{ user.points }} point{{ user.points|pluralize }}
+                </span>
+            </div>
+            {% empty %}
+            <div class="px-6 py-8 text-center text-gray-500">
+                Aucun utilisateur dans le classement pour le moment.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Rules Section -->
+    <div class="mt-12 max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Comment ça marche?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-3 text-green-600">Gagner des Points</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li>• 1 point par achat</li>
+                    <li>• 1 point par parrainage direct</li>
+                    <li>• Les points sont mensuels</li>
+                </ul>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-3 text-blue-600">Récompenses</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li>• Top 1: 100€ de réduction</li>
+                    <li>• Top 2-3: 50€ de réduction</li>
+                    <li>• Top 4-10: 20€ de réduction</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

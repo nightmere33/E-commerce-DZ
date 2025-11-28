@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Produits - PointsShop{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Nos Chaussures</h1>
+    
+    <!-- Categories Filter -->
+    <div class="mb-8">
+        <h2 class="text-lg font-semibold mb-4">Filtrer par catégorie:</h2>
+        <div class="flex flex-wrap gap-2">
+            <a href="{% url 'products' %}" 
+               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                Tous
+            </a>
+            {% for category in categories %}
+            <a href="{% url 'products' %}?category={{ category.id }}" 
+               class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in products %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+            {% else %}
+            <div class="bg-gray-200 h-48 flex items-center justify-center">
+                <span class="text-gray-500 text-lg">🛒 Image non disponible</span>
+            </div>
+            {% endif %}
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-2">{{ product.name }}</h3>
+                <p class="text-gray-600 mb-2">{{ product.brand }} - Taille {{ product.size }}</p>
+                <p class="text-gray-700 mb-4">{{ product.description|truncatewords:20 }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold text-blue-600">{{ product.price }}€</span>
+                    <div class="flex items-center space-x-2">
+                        {% if product.stock > 0 %}
+                        <span class="text-sm text-green-600">En stock ({{ product.stock }})</span>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                            Acheter
+                        </button>
+                        {% else %}
+                        <span class="text-sm text-red-600">Rupture de stock</span>
+                        <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
+                            Indisponible
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <p class="text-sm text-green-600 mt-2">✓ Rapporte 1 point</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-3 text-center py-12">
+            <p class="text-xl text-gray-600">Aucun produit disponible pour le moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - PointsShop - Votre boutique de chaussures{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="gradient-bg text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Bienvenue sur PointsShop</h1>
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            Découvrez des chaussures exceptionnelles et gagnez des points à chaque achat !
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a href="{% url 'products' %}" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition hover-lift">
+                <i class="fas fa-shopping-bag mr-2"></i>Découvrir la Boutique
+            </a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition hover-lift">
+                <i class="fas fa-gift mr-2"></i>Créer un Compte
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Comment ça marche ?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center p-6 hover-lift">
+                <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shopping-cart text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">1. Achetez</h3>
+                <p class="text-gray-600">Chaque achat de chaussures vous rapporte <strong>1 point</strong> pour le classement mensuel.</p>
+            </div>
+            
+            <div class="text-center p-6 hover-lift">
+                <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">2. Parrainez</h3>
+                <p class="text-gray-600">Parrainez des amis et gagnez <strong>1 point</strong> pour chaque inscription avec votre code.</p>
+            </div>
+            
+            <div class="text-center p-6 hover-lift">
+                <div class="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trophy text-3xl text-yellow-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">3. Gagnez</h3>
+                <p class="text-gray-600">Les <strong>10 premiers</strong> chaque mois gagnent des réductions exceptionnelles !</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top 3 Users Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Top 3 du Mois</h2>
+        <p class="text-gray-600 text-center mb-12">Nos meilleurs clients ce mois-ci</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {% for top_user in top_users %}
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center hover-lift {% if forloop.first %}border-2 border-yellow-400{% endif %}">
+                <div class="flex justify-center mb-4">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl
+                        {% if forloop.first %}bg-yellow-500
+                        {% elif forloop.counter == 2 %}bg-gray-400
+                        {% else %}bg-orange-500{% endif %}">
+                        {{ forloop.counter }}
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold mb-2">{{ top_user.username }}</h3>
+                <div class="flex items-center justify-center space-x-2 text-lg font-semibold text-gray-700 mb-4">
+                    <i class="fas fa-coins text-yellow-500"></i>
+                    <span>{{ top_user.points }} points</span>
+                </div>
+                {% if forloop.first %}
+                <div class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
+                    <i class="fas fa-crown mr-1"></i>Leader
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-8">
+                <p class="text-gray-500 text-xl">Soyez le premier à gagner des points !</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="{% url 'leaderboard' %}" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold hover-lift">
+                <i class="fas fa-chart-bar mr-2"></i>Voir le Classement Complet
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Chaussures Populaires</h2>
+        <p class="text-gray-600 text-center mb-12">Découvrez nos meilleures ventes</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for product in featured_products %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover-lift border border-gray-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-64 object-cover">
+                {% else %}
+                <div class="bg-gray-200 h-64 flex items-center justify-center">
+                    <i class="fas fa-shoe-prints text-4xl text-gray-400"></i>
+                </div>
+                {% endif %}
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-semibold text-gray-800">{{ product.name }}</h3>
+                        <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-2 py-1 rounded">
+                            Taille {{ product.size }}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 mb-2">{{ product.brand }}</p>
+                    <p class="text-gray-700 mb-4 line-clamp-2">{{ product.description|truncatewords:15 }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-blue-600">{{ product.price }}DA</span>
+                        <div class="flex items-center space-x-2">
+                            {% if product.stock > 0 %}
+                            <span class="text-sm text-green-600">
+                                <i class="fas fa-check-circle mr-1"></i>En stock
+                            </span>
+                            <a href="{% url 'purchase_product' product.id %}" 
+                               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
+                                Acheter
+                            </a>
+                            {% else %}
+                            <span class="text-sm text-red-600">
+                                <i class="fas fa-times-circle mr-1"></i>Rupture
+                            </span>
+                            <button class="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed" disabled>
+                                Indisponible
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mt-3 flex justify-between items-center text-sm">
+                        <span class="text-green-600 font-semibold">
+                            <i class="fas fa-coins mr-1"></i>1 point gagné
+                        </span>
+                        {% if product.stock > 0 and product.stock < 10 %}
+                        <span class="text-orange-500 font-semibold">
+                            Plus que {{ product.stock }} disponible(s)
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12">
+                <i class="fas fa-shoe-prints text-6xl text-gray-300 mb-4"></i>
+                <p class="text-xl text-gray-500">Aucun produit disponible pour le moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'products' %}" class="bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-900 transition font-semibold hover-lift">
+                <i class="fas fa-store mr-2"></i>Voir Tous les Produits
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 gradient-bg text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-4">Prêt à commencer ?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+            Rejoignez notre communauté et commencez à gagner des points dès aujourd'hui !
+        </p>
+        {% if not user.is_authenticated %}
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a href="{% url 'register' %}" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition hover-lift">
+                <i class="fas fa-user-plus mr-2"></i>Créer un Compte Gratuit
+            </a>
+            <a href="{% url 'login' %}" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition hover-lift">
+                <i class="fas fa-sign-in-alt mr-2"></i>Se Connecter
+            </a>
+        </div>
+        {% else %}
+        <div class="bg-white text-blue-600 inline-block px-8 py-4 rounded-lg font-semibold text-lg">
+            <i class="fas fa-check-circle mr-2"></i>Bienvenue {{ user.username }} ! Vous avez {{ user.points }} points.
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

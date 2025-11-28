@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - PointsShop{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="flex justify-center">
+            <i class="fas fa-shoe-prints text-4xl text-blue-600"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Créez votre compte
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Et commencez à gagner des points dès aujourd'hui !
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form class="space-y-6" method="POST">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                Veuillez corriger les erreurs ci-dessous
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                {{ form.errors }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Username Field -->
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700">
+                        {{ form.username.label }}
+                    </label>
+                    <div class="mt-1">
+                        {{ form.username }}
+                    </div>
+                    {% if form.username.help_text %}
+                    <p class="mt-1 text-xs text-gray-500">{{ form.username.help_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Email Field -->
+                <div>
+                    <label for="id_email" class="block text-sm font-medium text-gray-700">
+                        {{ form.email.label }}
+                    </label>
+                    <div class="mt-1">
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="id_password1" class="block text-sm font-medium text-gray-700">
+                        {{ form.password1.label }}
+                    </label>
+                    <div class="mt-1">
+                        {{ form.password1 }}
+                    </div>
+                    {% if form.password1.help_text %}
+                    <div class="mt-1 text-xs text-gray-600">
+                        {{ form.password1.help_text|safe }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password Confirmation Field -->
+                <div>
+                    <label for="id_password2" class="block text-sm font-medium text-gray-700">
+                        {{ form.password2.label }}
+                    </label>
+                    <div class="mt-1">
+                        {{ form.password2 }}
+                    </div>
+                    {% if form.password2.help_text %}
+                    <p class="mt-1 text-xs text-gray-500">{{ form.password2.help_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Referral Code Field -->
+                <div>
+                    <label for="id_referral_code_input" class="block text-sm font-medium text-gray-700">
+                        {{ form.referral_code_input.label }}
+                    </label>
+                    <div class="mt-1">
+                        {{ form.referral_code_input }}
+                    </div>
+                    {% if form.referral_code_input.help_text %}
+                    <p class="mt-1 text-xs text-gray-500">{{ form.referral_code_input.help_text }}</p>
+                    {% endif %}
+                    {% if form.referral_code_input.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ form.referral_code_input.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <button type="submit" 
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition hover-lift">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Créer mon compte
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">
+                            Déjà un compte ?
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <a href="{% url 'login' %}" 
+                       class="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition hover-lift">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Se connecter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
