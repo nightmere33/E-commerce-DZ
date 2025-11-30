@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+
+{% block title %}Panier - PointsShop{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm text-gray-600">
+                <li>
+                    <a href="{% url 'home' %}" class="hover:text-blue-600 transition">Accueil</a>
+                </li>
+                <li class="flex items-center">
+                    <i class="fas fa-chevron-right text-xs mx-2"></i>
+                    <a href="{% url 'products' %}" class="hover:text-blue-600 transition">Boutique</a>
+                </li>
+                <li class="flex items-center">
+                    <i class="fas fa-chevron-right text-xs mx-2"></i>
+                    <span class="text-gray-900 font-medium">Panier</span>
+                </li>
+            </ol>
+        </nav>
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Votre Panier</h1>
+        
+        {% if cart.items.all %}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Cart Items -->
+            <div class="lg:col-span-2 space-y-4">
+                {% for item in cart.items.all %}
+                <div class="bg-white rounded-xl shadow-lg p-6 flex items-center space-x-6 hover:shadow-xl transition-all duration-300" id="cart-item-{{ item.id }}">
+                    <!-- Product Image -->
+                    <a href="{% url 'product_detail' item.product.id %}" class="flex-shrink-0">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" 
+                             alt="{{ item.product.name }}" 
+                             class="w-24 h-24 object-cover rounded-lg">
+                        {% else %}
+                        <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+                            <span class="text-3xl text-gray-400">{{ item.product.get_product_type_icon }}</span>
+                        </div>
+                        {% endif %}
+                    </a>
+                    
+                    <!-- Product Info -->
+                    <div class="flex-1">
+                        <a href="{% url 'product_detail' item.product.id %}" class="group">
+                            <h3 class="font-semibold text-gray-900 text-lg group-hover:text-blue-600 transition">{{ item.product.name }}</h3>
+                        </a>
+                        <p class="text-gray-600 text-sm mb-1">{{ item.product.brand }}</p>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <span class="flex items-center space-x-1">
+                                <i class="fas fa-ruler"></i>
+                                <span>{{ item.product.get_size_display }}</span>
+                            </span>
+                            <span class="flex items-center space-x-1">
+                                <i class="fas fa-palette"></i>
+                                <span>{{ item.product.color }}</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Quantity and Price -->
+                    <div class="text-right space-y-2">
+                        <p class="text-2xl font-bold text-blue-600">{{ item.total_price }}€</p>
+                        <p class="text-sm text-gray-500">{{ item.product.price }}€ x {{ item.quantity }}</p>
+                        
+                        <!-- Quantity Controls -->
+                        <div class="flex items-center justify-end space-x-2">
+                            <form method="POST" action="{% url 'remove_from_cart' item.id %}" class="inline quantity-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="decrease">
+                                <button type="submit" 
+                                        class="w-8 h-8 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition flex items-center justify-center">
+                                    <i class="fas fa-minus text-xs"></i>
+                                </button>
+                            </form>
+                            <span class="w-8 text-center font-semibold">{{ item.quantity }}</span>
+                            <form method="POST" action="{% url 'add_to_cart' item.product.id %}" class="inline quantity-form">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="w-8 h-8 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition flex items-center justify-center">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Remove Button -->
+                        <form method="POST" action="{% url 'remove_from_cart' item.id %}" class="mt-2 remove-form">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm flex items-center space-x-1 transition">
+                                <i class="fas fa-trash"></i>
+                                <span>Supprimer</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="bg-white rounded-xl shadow-lg p-6 h-fit sticky top-4">
+                <h3 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">Résumé de la commande</h3>
+                
+                <div class="space-y-4 mb-6">
+                    <div class="flex justify-between text-gray-600">
+                        <span>Sous-total ({{ cart.total_items }} article{{ cart.total_items|pluralize:"s" }})</span>
+                        <span>{{ cart.total_price }}€</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Livraison</span>
+                        <span class="text-green-600 font-semibold">Gratuite</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Taxes</span>
+                        <span>Incluses</span>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="flex justify-between text-lg font-bold text-gray-900">
+                            <span>Total</span>
+                            <span class="text-blue-600">{{ cart.total_price }}€</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Points Earned -->
+                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg p-4 mb-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-gift text-xl"></i>
+                            <div>
+                                <p class="font-semibold">Points à gagner</p>
+                                <p class="text-yellow-100 text-sm">{{ cart.total_items }} point{{ cart.total_items|pluralize }} avec cet achat</p>
+                            </div>
+                        </div>
+                        <div class="bg-white text-yellow-600 px-3 py-1 rounded-full font-bold text-lg">
+                            +{{ cart.total_items }} pts
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Checkout Button -->
+                <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-3">
+                    <i class="fas fa-lock"></i>
+                    <span>Procéder au paiement</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <!-- Security Badge -->
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-gray-500 flex items-center justify-center space-x-1">
+                        <i class="fas fa-shield-alt text-green-500"></i>
+                        <span>Paiement 100% sécurisé • Chiffrement SSL</span>
+                    </p>
+                </div>
+                
+                <!-- Continue Shopping -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <a href="{% url 'products' %}" 
+                       class="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition flex items-center justify-center space-x-2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Continuer mes achats</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Empty Cart State -->
+        <div class="text-center py-16">
+            <div class="max-w-md mx-auto">
+                <div class="text-6xl text-gray-300 mb-6">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-600 mb-4">Votre panier est vide</h3>
+                <p class="text-gray-500 mb-2">Il semblerait que vous n'ayez pas encore ajouté d'articles à votre panier.</p>
+                <p class="text-gray-500 mb-8">Découvrez nos produits et commencez à gagner des points!</p>
+                <div class="space-y-4">
+                    <a href="{% url 'products' %}" 
+                       class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition font-semibold text-lg hover-lift">
+                        <i class="fas fa-store mr-2"></i>
+                        Découvrir la boutique
+                    </a>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Chaque achat vous rapporte 1 point pour le classement mensuel
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .sticky {
+        position: sticky;
+    }
+    
+    @media (max-width: 1024px) {
+        .sticky {
+            position: relative;
+        }
+    }
+</style>
+
+<script>
+    // Update cart count in navigation
+    function updateCartCount(count) {
+        const cartCounters = document.querySelectorAll('#cart-count, #mobile-cart-count');
+        cartCounters.forEach(counter => {
+            counter.textContent = count;
+            // Add animation
+            counter.classList.add('animate-ping');
+            setTimeout(() => {
+                counter.classList.remove('animate-ping');
+            }, 1000);
+        });
+    }
+
+    // Initialize cart count
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get initial cart count from server
+        fetch("{% url 'cart_count' %}")
+            .then(response => response.json())
+            .then(data => {
+                updateCartCount(data.cart_count);
+            });
+        
+        // Add AJAX functionality to cart forms
+        document.querySelectorAll('.quantity-form, .remove-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalHTML = submitButton.innerHTML;
+                
+                // Show loading state
+                if (submitButton.querySelector('.fa-spinner') === null) {
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                }
+                submitButton.disabled = true;
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateCartCount(data.cart_count);
+                        showNotification(data.message, 'success');
+                        
+                        // If it's a remove action, remove the item from DOM
+                        if (this.classList.contains('remove-form')) {
+                            const itemId = this.action.split('/').filter(Boolean).pop();
+                            const cartItem = document.getElementById(`cart-item-${itemId}`);
+                            if (cartItem) {
+                                cartItem.style.opacity = '0';
+                                setTimeout(() => {
+                                    cartItem.remove();
+                                    // Reload page if cart is empty
+                                    if (document.querySelectorAll('[id^="cart-item-"]').length === 0) {
+                                        window.location.reload();
+                                    }
+                                }, 300);
+                            }
+                        } else {
+                            // Reload page for quantity updates
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        }
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Une erreur est survenue', 'error');
+                })
+                .finally(() => {
+                    submitButton.innerHTML = originalHTML;
+                    submitButton.disabled = false;
+                });
+            });
+        });
+    });
+
+    function showNotification(message, type) {
+        // Create a temporary notification
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+            type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        }`;
+        notification.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+</script>
+{% endblock %}

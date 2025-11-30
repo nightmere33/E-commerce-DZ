@@ -23,6 +23,28 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
+        
+        /* Mobile menu animation */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        /* Overlay for mobile menu */
+        .menu-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
     
     {% block extra_css %}{% endblock %}
@@ -43,25 +65,44 @@
                     <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Accueil</a>
                     <a href="{% url 'products' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Boutique</a>
                     <a href="{% url 'leaderboard' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Classement</a>
+                    
                     <!-- Language Switcher -->
                     <div class="relative group">
                         <button class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 font-medium transition">
                             <i class="fas fa-globe"></i>
-                            <span class="uppercase">{{ current_language }}</span>
+                            <span class="uppercase">
+                                {% if current_language == 'fr' %}FR
+                                {% elif current_language == 'en' %}EN
+                                {% elif current_language == 'ar' %}AR
+                                {% else %}FR{% endif %}
+                            </span>
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
-                        <div class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-50">
-                            {% for lang in available_languages %}
-                            <a href="{{ lang.url }}" 
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if lang.active %}bg-blue-50 text-blue-600{% endif %}">
-                                {{ lang.name }}
+                        <div class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-50 border">
+                            <a href="{% url 'set_language' 'fr' %}" 
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if current_language == 'fr' %}bg-blue-50 text-blue-600{% endif %}">
+                                🇫🇷 Français
                             </a>
-                            {% endfor %}
+                            <a href="{% url 'set_language' 'en' %}" 
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if current_language == 'en' %}bg-blue-50 text-blue-600{% endif %}">
+                                🇬🇧 English
+                            </a>
+                            <a href="{% url 'set_language' 'ar' %}" 
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if current_language == 'ar' %}bg-blue-50 text-blue-600{% endif %}">
+                                🇸🇦 العربية
+                            </a>
                         </div>
                     </div>
+                    
                     <!-- User Auth Links -->
                     {% if user.is_authenticated %}
                         <div class="flex items-center space-x-4">
+                            <!-- Cart Icon -->
+                            <a href="{% url 'cart' %}" class="relative text-gray-700 hover:text-blue-600 transition">
+                                <i class="fas fa-shopping-cart text-xl"></i>
+                                <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cart-count">0</span>
+                            </a>
+                            
                             <div class="flex items-center space-x-2 bg-blue-50 px-3 py-1 rounded-full">
                                 <i class="fas fa-coins text-yellow-500"></i>
                                 <span class="font-semibold text-blue-700">{{ user.points }} pts</span>
@@ -78,7 +119,7 @@
                             </form>
                         </div>
                     {% else %}
-                        <div class="flex space-x-4">
+                        <div class="flex items-center space-x-4">
                             <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Connexion</a>
                             <a href="{% url 'register' %}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium hover-lift">
                                 S'inscrire
@@ -88,11 +129,91 @@
                 </div>
                 
                 <!-- Mobile menu button -->
-                <button class="md:hidden text-gray-700 focus:outline-none">
+                <button class="md:hidden text-gray-700 focus:outline-none" id="mobileMenuButton">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu fixed inset-y-0 left-0 w-64 bg-white shadow-2xl z-50 md:hidden" id="mobileMenu">
+            <div class="p-6">
+                <!-- Close Button -->
+                <div class="flex justify-between items-center mb-8">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-2 text-xl font-bold text-blue-600">
+                        <i class="fas fa-shoe-prints"></i>
+                        <span>PointsShop</span>
+                    </a>
+                    <button class="text-gray-500 hover:text-gray-700" id="closeMobileMenu">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="space-y-6">
+                    <a href="{% url 'home' %}" class="block text-gray-700 hover:text-blue-600 font-medium transition py-2 border-b border-gray-100">
+                        <i class="fas fa-home mr-3"></i>Accueil
+                    </a>
+                    <a href="{% url 'products' %}" class="block text-gray-700 hover:text-blue-600 font-medium transition py-2 border-b border-gray-100">
+                        <i class="fas fa-store mr-3"></i>Boutique
+                    </a>
+                    <a href="{% url 'leaderboard' %}" class="block text-gray-700 hover:text-blue-600 font-medium transition py-2 border-b border-gray-100">
+                        <i class="fas fa-chart-bar mr-3"></i>Classement
+                    </a>
+
+                    <!-- Language Switcher Mobile -->
+                    <div class="border-b border-gray-100 pb-4">
+                        <p class="text-sm text-gray-500 mb-2">Langue</p>
+                        <div class="flex space-x-2">
+                            <a href="{% url 'set_language' 'fr' %}" class="flex-1 text-center px-3 py-2 text-sm {% if current_language == 'fr' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
+                                FR
+                            </a>
+                            <a href="{% url 'set_language' 'en' %}" class="flex-1 text-center px-3 py-2 text-sm {% if current_language == 'en' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
+                                EN
+                            </a>
+                            <a href="{% url 'set_language' 'ar' %}" class="flex-1 text-center px-3 py-2 text-sm {% if current_language == 'ar' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
+                                AR
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- User Section -->
+                    {% if user.is_authenticated %}
+                    <div class="space-y-4 border-b border-gray-100 pb-4">
+                        <div class="flex items-center space-x-3 bg-blue-50 p-3 rounded-lg">
+                            <i class="fas fa-coins text-yellow-500"></i>
+                            <span class="font-semibold text-blue-700">{{ user.points }} pts</span>
+                        </div>
+                        <a href="{% url 'cart' %}" class="flex items-center text-gray-700 hover:text-blue-600 transition py-2">
+                            <i class="fas fa-shopping-cart mr-3"></i>Panier
+                            <span class="ml-auto bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="mobile-cart-count">0</span>
+                        </a>
+                        <a href="{% url 'profile' %}" class="flex items-center text-gray-700 hover:text-blue-600 transition py-2">
+                            <i class="fas fa-user-circle mr-3"></i>Mon Profil
+                        </a>
+                        <form method="post" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="flex items-center w-full text-gray-700 hover:text-blue-600 transition py-2">
+                                <i class="fas fa-sign-out-alt mr-3"></i>Déconnexion
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="space-y-3 border-b border-gray-100 pb-4">
+                        <a href="{% url 'login' %}" class="block w-full text-center bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200 transition font-medium">
+                            Connexion
+                        </a>
+                        <a href="{% url 'register' %}" class="block w-full text-center bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium">
+                            S'inscrire
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="menu-overlay fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" id="menuOverlay"></div>
     </nav>
 
     <!-- Messages (Alerts) -->
@@ -195,6 +316,148 @@
     </footer>
 
     <!-- JavaScript -->
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+
+            function openMobileMenu() {
+                mobileMenu.classList.add('open');
+                menuOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenuFunc() {
+                mobileMenu.classList.remove('open');
+                menuOverlay.classList.remove('open');
+                document.body.style.overflow = 'auto';
+            }
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', openMobileMenu);
+            }
+            if (closeMobileMenu) {
+                closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+            }
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', closeMobileMenuFunc);
+            }
+
+            // Close menu on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMobileMenuFunc();
+                }
+            });
+
+            // Update cart counts
+            function updateCartCount(count) {
+                const cartCounters = document.querySelectorAll('#cart-count, #mobile-cart-count');
+                cartCounters.forEach(counter => {
+                    counter.textContent = count;
+                    // Add animation
+                    counter.classList.add('animate-ping');
+                    setTimeout(() => {
+                        counter.classList.remove('animate-ping');
+                    }, 1000);
+                });
+            }
+
+            // Get initial cart count
+            {% if user.is_authenticated %}
+            fetch("{% url 'cart_count' %}")
+                .then(response => response.json())
+                .then(data => {
+                    updateCartCount(data.cart_count);
+                })
+                .catch(error => {
+                    console.error('Error fetching cart count:', error);
+                });
+            {% else %}
+            updateCartCount(0);
+            {% endif %}
+        });
+
+        // AJAX add to cart functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalHTML = submitButton.innerHTML;
+                    
+                    // Show loading state
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    submitButton.disabled = true;
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateCartCount(data.cart_count);
+                            showNotification(data.message, 'success');
+                        } else {
+                            showNotification(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Une erreur est survenue', 'error');
+                    })
+                    .finally(() => {
+                        submitButton.innerHTML = originalHTML;
+                        submitButton.disabled = false;
+                    });
+                });
+            });
+        });
+
+        function showNotification(message, type) {
+            // Create a temporary notification
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Global updateCartCount function
+        function updateCartCount(count) {
+            const cartCounters = document.querySelectorAll('#cart-count, #mobile-cart-count');
+            cartCounters.forEach(counter => {
+                counter.textContent = count;
+                // Add animation
+                counter.classList.add('animate-ping');
+                setTimeout(() => {
+                    counter.classList.remove('animate-ping');
+                }, 1000);
+            });
+        }
+    </script>
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

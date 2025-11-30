@@ -22,9 +22,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'size', 'price', 'stock', 'category')
-    list_filter = ('category', 'brand', 'size')
+    list_display = ('name', 'brand', 'product_type', 'size', 'price', 'stock', 'category')
+    list_filter = ('category', 'brand', 'product_type', 'size')
     search_fields = ('name', 'brand', 'description')
+    list_editable = ('price', 'stock')
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

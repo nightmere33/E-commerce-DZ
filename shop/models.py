@@ -60,6 +60,13 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
+    PRODUCT_TYPES = [
+        ('shoe', 'Chaussure'),
+        ('bijoux', 'Bijoux'),
+        ('sac', 'Sac'),
+        ('other', 'Autre'),
+    ]
+    
     SHOE_SIZES = [
         ('36', '36'),
         ('37', '37'),
@@ -71,13 +78,29 @@ class Product(models.Model):
         ('43', '43'),
         ('44', '44'),
         ('45', '45'),
+        ('one_size', 'Taille Unique'),
+    ]
+    
+    BIJOUX_SIZES = [
+        ('small', 'Petit'),
+        ('medium', 'Moyen'),
+        ('large', 'Grand'),
+        ('one_size', 'Taille Unique'),
+    ]
+    
+    SAC_SIZES = [
+        ('small', 'Petit'),
+        ('medium', 'Moyen'),
+        ('large', 'Grand'),
+        ('extra_large', 'Très Grand'),
     ]
     
     name = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    size = models.CharField(max_length=3, choices=SHOE_SIZES)
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='shoe')
+    size = models.CharField(max_length=20, blank=True)
     brand = models.CharField(max_length=100)
     color = models.CharField(max_length=50)
     image = models.ImageField(upload_to='products/', blank=True, null=True)
@@ -85,12 +108,32 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.name} - {self.brand} ({self.size})"
+        return f"{self.name} - {self.brand}"
+    
+    def get_size_display(self):
+        """Get the appropriate size choices based on product type"""
+        if self.product_type == 'shoe':
+            return dict(self.SHOE_SIZES).get(self.size, self.size)
+        elif self.product_type == 'bijoux':
+            return dict(self.BIJOUX_SIZES).get(self.size, self.size)
+        elif self.product_type == 'sac':
+            return dict(self.SAC_SIZES).get(self.size, self.size)
+        return self.size
+    
+    def get_product_type_icon(self):
+        """Get appropriate icon for product type"""
+        icons = {
+            'shoe': '👟',
+            'bijoux': '💎',
+            'sac': '👜',
+            'other': '🛍️'
+        }
+        return icons.get(self.product_type, '🛍️')
     
     def get_image_url(self):
         if self.image and hasattr(self.image, 'url'):
             return self.image.url
-        return '/static/images/default-shoe.jpg'  # We'll create this
+        return '/static/images/default-product.jpg'
 
 class Order(models.Model):
     STATUS_CHOICES = [

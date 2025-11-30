@@ -7,6 +7,8 @@ from .models import Product, Category, CustomUser, Order, OrderItem
 from .forms import CustomUserCreationForm, CustomLoginForm
 from django.utils import translation
 from django.http import HttpResponseRedirect
+from django.db.models import Q, Sum
+
 
 def set_language_view(request, lang_code):
     if lang_code in ['fr', 'en', 'ar']:
@@ -40,19 +42,31 @@ def products(request):
     category_id = request.GET.get('category')
     if category_id:
         products_list = products_list.filter(category_id=category_id)
+        current_category = Category.objects.get(id=category_id)
+    else:
+        current_category = None
     
     # Search functionality
     search_query = request.GET.get('search')
     if search_query:
         products_list = products_list.filter(
-            models.Q(name__icontains=search_query) |
-            models.Q(description__icontains=search_query) |
-            models.Q(brand__icontains=search_query)
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(brand__icontains=search_query)
         )
+    
+    # Calculate totals in the view, not template
+    total_products = products_list.count()
+    total_categories = categories.count()
+    total_stock = products_list.aggregate(total_stock=Sum('stock'))['total_stock'] or 0
     
     context = {
         'products': products_list,
         'categories': categories,
+        'current_category': current_category,
+        'total_products': total_products,
+        'total_categories': total_categories,
+        'total_stock': total_stock,
     }
     return render(request, 'products.html', context)
 
@@ -141,13 +155,29 @@ def profile(request):
     }
     return render(request, 'profile.html', context)
 
+# Add this new view for product details
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Get related products (same category, excluding current product)
+    related_products = Product.objects.filter(
+        category=product.category
+    ).exclude(id=product.id)[:4]
+    
+    context = {
+        'product': product,
+        'related_products': related_products,
+    }
+    return render(request, 'product_detail.html', context)
+
+
 @login_required
 def purchase_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     
     if product.stock <= 0:
         messages.error(request, 'Désolé, ce produit est en rupture de stock.')
-        return redirect('products')
+        return redirect('product_detail', product_id=product_id)
     
     # Create order
     order = Order.objects.create(
@@ -177,4 +207,4 @@ def purchase_product(request, product_id):
         f'Total points: {user.points}'
     )
     
-    return redirect('products')
+    return redirect('product_detail', product_id=product_id)

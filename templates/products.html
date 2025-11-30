@@ -1,66 +1,359 @@
 {% extends 'base.html' %}
 
-{% block title %}Produits - PointsShop{% endblock %}
+{% block title %}Boutique - PointsShop - Découvrez nos produits premium{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">Nos Chaussures</h1>
-    
-    <!-- Categories Filter -->
-    <div class="mb-8">
-        <h2 class="text-lg font-semibold mb-4">Filtrer par catégorie:</h2>
-        <div class="flex flex-wrap gap-2">
-            <a href="{% url 'products' %}" 
-               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                Tous
-            </a>
-            {% for category in categories %}
-            <a href="{% url 'products' %}?category={{ category.id }}" 
-               class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition">
-                {{ category.name }}
-            </a>
-            {% endfor %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Notre Boutique
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Découvrez notre collection exclusive de chaussures, bijoux et sacs. 
+                Chaque achat vous rapporte des points pour le classement mensuel !
+            </p>
         </div>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for product in products %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
-            {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
-            {% else %}
-            <div class="bg-gray-200 h-48 flex items-center justify-center">
-                <span class="text-gray-500 text-lg">🛒 Image non disponible</span>
+
+        <!-- Stats Bar -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                    <div class="text-2xl font-bold text-blue-600">{{ total_products }}</div>
+                    <div class="text-sm text-gray-600">Produits</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-green-600">{{ total_categories }}</div>
+                    <div class="text-sm text-gray-600">Catégories</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-purple-600">{{ total_stock }}</div>
+                    <div class="text-sm text-gray-600">En Stock</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-yellow-600">+1 pt</div>
+                    <div class="text-sm text-gray-600">Par Achat</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+                <!-- Categories Filter -->
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Filtrer par catégorie</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{% url 'products' %}" 
+                           class="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 font-medium flex items-center space-x-2">
+                            <i class="fas fa-grid"></i>
+                            <span>Tous les produits</span>
+                        </a>
+                        {% for category in categories %}
+                        <a href="{% url 'products' %}?category={{ category.id }}" 
+                           class="px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium flex items-center space-x-2">
+                            <i class="fas fa-tag"></i>
+                            <span>{{ category.name }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sort Options -->
+                <div class="flex-shrink-0">
+                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
+                    <select id="sort" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg">
+                        <option>Nouveautés</option>
+                        <option>Prix croissant</option>
+                        <option>Prix décroissant</option>
+                        <option>Populaires</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filters -->
+            {% if request.GET.category %}
+            <div class="mt-4 flex items-center space-x-2">
+                <span class="text-sm text-gray-600">Filtre actif:</span>
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    {% for category in categories %}
+                        {% if category.id == request.GET.category|add:"0" %}
+                            {{ category.name }}
+                        {% endif %}
+                    {% endfor %}
+                    <a href="{% url 'products' %}" class="ml-1 text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </span>
             </div>
             {% endif %}
-            <div class="p-6">
-                <h3 class="text-xl font-semibold mb-2">{{ product.name }}</h3>
-                <p class="text-gray-600 mb-2">{{ product.brand }} - Taille {{ product.size }}</p>
-                <p class="text-gray-700 mb-4">{{ product.description|truncatewords:20 }}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-2xl font-bold text-blue-600">{{ product.price }}€</span>
-                    <div class="flex items-center space-x-2">
-                        {% if product.stock > 0 %}
-                        <span class="text-sm text-green-600">En stock ({{ product.stock }})</span>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                            Acheter
-                        </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {% for product in products %}
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+                <!-- Product Image with Overlay -->
+                <div class="relative overflow-hidden">
+                    <a href="{% url 'product_detail' product.id %}">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" 
+                             alt="{{ product.name }}" 
+                             class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
                         {% else %}
-                        <span class="text-sm text-red-600">Rupture de stock</span>
-                        <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
-                            Indisponible
+                        <div class="w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="text-center text-gray-400">
+                                <div class="text-5xl mb-2">{{ product.get_product_type_icon }}</div>
+                                <p class="text-sm">Image non disponible</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </a>
+                    
+                    <!-- Product Type Badge -->
+                    <div class="absolute top-3 left-3">
+                        <span class="bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
+                            {{ product.get_product_type_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Stock Status Badge -->
+                    <div class="absolute top-3 right-3">
+                        {% if product.stock > 0 %}
+                        <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
+                            <i class="fas fa-check mr-1"></i>En stock
+                        </span>
+                        {% else %}
+                        <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
+                            <i class="fas fa-times mr-1"></i>Rupture
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Quick Actions Overlay -->
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div class="flex space-x-2 transform translate-y-4 group-hover:translate-y-0 transition duration-300">
+                            <a href="{% url 'product_detail' product.id %}" 
+                               class="bg-white text-gray-800 p-3 rounded-full hover:bg-gray-100 transition shadow-lg">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button class="bg-white text-gray-800 p-3 rounded-full hover:bg-gray-100 transition shadow-lg">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="p-5">
+                    <!-- Brand and Category -->
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-blue-600">{{ product.brand }}</span>
+                        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                            {{ product.category.name }}
+                        </span>
+                    </div>
+
+                    <!-- Product Name -->
+                    <a href="{% url 'product_detail' product.id %}">
+                        <h3 class="font-semibold text-gray-900 mb-2 text-lg hover:text-blue-600 transition line-clamp-2">
+                            {{ product.name }}
+                        </h3>
+                    </a>
+
+                    <!-- Product Specs -->
+                    <div class="flex items-center space-x-3 text-sm text-gray-600 mb-3">
+                        <span class="flex items-center space-x-1">
+                            <i class="fas fa-ruler"></i>
+                            <span>{{ product.get_size_display }}</span>
+                        </span>
+                        <span class="flex items-center space-x-1">
+                            <i class="fas fa-palette"></i>
+                            <span>{{ product.color }}</span>
+                        </span>
+                    </div>
+
+                    <!-- Price and Points -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <span class="text-2xl font-bold text-gray-900">{{ product.price }}€</span>
+                            <span class="text-sm text-gray-500 line-through ml-2">{{ product.price|add:15 }}€</span>
+                        </div>
+                        <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            +1 pt
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2">
+                        <a href="{% url 'product_detail' product.id %}" 
+                           class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center space-x-2 group/btn">
+                            <i class="fas fa-shopping-bag group-hover/btn:scale-110 transition"></i>
+                            <span>Voir Détails</span>
+                        </a>
+                        {% if product.stock > 0 %}
+                        <form method="POST" action="{% url 'purchase_product' product.id %}" class="flex-shrink-0">
+                            {% csrf_token %}
+                            <button type="submit" 
+                                    class="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition transform hover:scale-105">
+                                <i class="fas fa-bolt"></i>
+                            </button>
+                        </form>
+                        {% else %}
+                        <button disabled
+                                class="bg-gray-400 text-white p-3 rounded-lg cursor-not-allowed">
+                            <i class="fas fa-times"></i>
                         </button>
                         {% endif %}
                     </div>
+
+                    <!-- Stock Info -->
+                    <div class="mt-3 text-xs text-gray-500">
+                        {% if product.stock > 0 and product.stock < 5 %}
+                        <div class="flex items-center space-x-1 text-orange-600">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Plus que {{ product.stock }} disponible(s)!</span>
+                        </div>
+                        {% elif product.stock >= 5 %}
+                        <div class="flex items-center space-x-1 text-green-600">
+                            <i class="fas fa-check"></i>
+                            <span>En stock</span>
+                        </div>
+                        {% else %}
+                        <div class="flex items-center space-x-1 text-red-600">
+                            <i class="fas fa-times"></i>
+                            <span>Rupture de stock</span>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                <p class="text-sm text-green-600 mt-2">✓ Rapporte 1 point</p>
+            </div>
+            {% empty %}
+            <!-- Empty State -->
+            <div class="col-span-full text-center py-16">
+                <div class="max-w-md mx-auto">
+                    <div class="text-6xl text-gray-300 mb-4">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-600 mb-2">Aucun produit trouvé</h3>
+                    <p class="text-gray-500 mb-6">
+                        {% if request.GET.category %}
+                        Aucun produit disponible dans cette catégorie pour le moment.
+                        {% else %}
+                        Aucun produit disponible pour le moment.
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'products' %}" 
+                       class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                        Voir tous les produits
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Features Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl p-8 text-white">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shipping-fast text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Livraison Rapide</h3>
+                    <p class="text-blue-100">Livraison gratuite sous 48h</p>
+                </div>
+                <div>
+                    <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Paiement Sécurisé</h3>
+                    <p class="text-blue-100">Transactions 100% sécurisées</p>
+                </div>
+                <div>
+                    <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-gift text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Gagnez des Points</h3>
+                    <p class="text-blue-100">1 point par achat + parrainage</p>
+                </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-span-3 text-center py-12">
-            <p class="text-xl text-gray-600">Aucun produit disponible pour le moment.</p>
+
+        <!-- Newsletter Section -->
+        <div class="mt-12 bg-white rounded-2xl shadow-lg p-8 text-center">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Restez informé</h2>
+            <p class="text-gray-600 mb-6 max-w-md mx-auto">
+                Inscrivez-vous à notre newsletter pour recevoir les nouveautés et offres exclusives.
+            </p>
+            <div class="flex max-w-md mx-auto">
+                <input type="email" 
+                       placeholder="Votre email" 
+                       class="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button class="bg-blue-600 text-white px-6 py-3 rounded-r-lg hover:bg-blue-700 transition font-semibold">
+                    S'inscrire
+                </button>
+            </div>
         </div>
-        {% endfor %}
     </div>
 </div>
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Smooth scrolling for anchor links */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Custom scrollbar for webkit browsers */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+</style>
+
+<script>
+    // Simple sort functionality
+    document.getElementById('sort').addEventListener('change', function(e) {
+        // This is where you would implement sorting logic
+        console.log('Sort by:', e.target.value);
+        // You can add AJAX calls here for dynamic sorting
+    });
+
+    // Add to cart animation
+    document.querySelectorAll('form[action*="purchase"] button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (this.disabled) return;
+            
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            this.disabled = true;
+            
+            // Re-enable after 2 seconds (simulate purchase)
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }, 2000);
+        });
+    });
+</script>
 {% endblock %}
