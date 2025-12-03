@@ -1,0 +1,162 @@
+# English translations for PointsShop
+msgid ""
+msgstr ""
+"Project-Id-Version: PointsShop 1.0\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Your Premium Shoe Store"
+msgstr "Your Premium Shoe Store"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Shop"
+msgstr "Shop"
+
+msgid "Leaderboard"
+msgstr "Leaderboard"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Sign Up"
+msgstr "Sign Up"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Cart"
+msgstr "Cart"
+
+msgid "My Profile"
+msgstr "My Profile"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "pts"
+msgstr "pts"
+
+msgid "Your premium shoe store with an innovative points system. Buy, refer and earn rewards every month!"
+msgstr "Your premium shoe store with an innovative points system. Buy, refer and earn rewards every month!"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Mon-Fri: 9am-6pm"
+msgstr "Mon-Fri: 9am-6pm"
+
+msgid "All rights reserved."
+msgstr "All rights reserved."
+
+msgid "Welcome to PointsShop"
+msgstr "Welcome to PointsShop"
+
+msgid "Discover exceptional shoes and earn points with every purchase!"
+msgstr "Discover exceptional shoes and earn points with every purchase!"
+
+msgid "Discover the Shop"
+msgstr "Discover the Shop"
+
+msgid "Create an Account"
+msgstr "Create an Account"
+
+msgid "How does it work?"
+msgstr "How does it work?"
+
+msgid "1. Buy"
+msgstr "1. Buy"
+
+msgid "Each shoe purchase earns you 1 point for the monthly ranking."
+msgstr "Each shoe purchase earns you 1 point for the monthly ranking."
+
+msgid "2. Refer"
+msgstr "2. Refer"
+
+msgid "Refer friends and earn 1 point for each signup with your code."
+msgstr "Refer friends and earn 1 point for each signup with your code."
+
+msgid "3. Win"
+msgstr "3. Win"
+
+msgid "The top 10 each month win exceptional discounts!"
+msgstr "The top 10 each month win exceptional discounts!"
+
+msgid "Top 3 of the Month"
+msgstr "Top 3 of the Month"
+
+msgid "Our best customers this month"
+msgstr "Our best customers this month"
+
+msgid "Leader"
+msgstr "Leader"
+
+msgid "Be the first to earn points!"
+msgstr "Be the first to earn points!"
+
+msgid "View Full Ranking"
+msgstr "View Full Ranking"
+
+msgid "Popular Shoes"
+msgstr "Popular Shoes"
+
+msgid "Discover our bestsellers"
+msgstr "Discover our bestsellers"
+
+msgid "Size"
+msgstr "Size"
+
+msgid "In stock"
+msgstr "In stock"
+
+msgid "Buy"
+msgstr "Buy"
+
+msgid "Out of stock"
+msgstr "Out of stock"
+
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgid "1 point earned"
+msgstr "1 point earned"
+
+msgid "Only"
+msgstr "Only"
+
+msgid "available"
+msgstr "available"
+
+msgid "No products available at the moment."
+msgstr "No products available at the moment."
+
+msgid "View All Products"
+msgstr "View All Products"
+
+msgid "Ready to start?"
+msgstr "Ready to start?"
+
+msgid "Join our community and start earning points today!"
+msgstr "Join our community and start earning points today!"
+
+msgid "Create a Free Account"
+msgstr "Create a Free Account"
+
+msgid "Sign In"
+msgstr "Sign In"
+
+msgid "Welcome"
+msgstr "Welcome"
+
+msgid "You have"
+msgstr "You have"
+
+msgid "points"
+msgstr "points"
