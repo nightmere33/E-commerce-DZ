@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Accueil - PointsShop - Votre boutique de chaussures{% endblock %}
+{% block title %}{% trans "Home" %} - PointsShop - {% trans "Your Premium Shoe Store" %}{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <section class="gradient-bg text-white py-20">
     <div class="container mx-auto px-4 text-center">
-        <h1 class="text-5xl md:text-6xl font-bold mb-6">Bienvenue sur PointsShop</h1>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">{% trans "Welcome to PointsShop" %}</h1>
         <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Découvrez des chaussures exceptionnelles et gagnez des points à chaque achat !
+            {% trans "Discover exceptional shoes and earn points with every purchase!" %}
         </p>
         <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
             <a href="{% url 'products' %}" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition hover-lift">
-                <i class="fas fa-shopping-bag mr-2"></i>Découvrir la Boutique
+                <i class="fas fa-shopping-bag mr-2"></i>{% trans "Discover the Shop" %}
             </a>
             {% if not user.is_authenticated %}
             <a href="{% url 'register' %}" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition hover-lift">
-                <i class="fas fa-gift mr-2"></i>Créer un Compte
+                <i class="fas fa-gift mr-2"></i>{% trans "Create an Account" %}
             </a>
             {% endif %}
         </div>
@@ -26,30 +27,30 @@
 <!-- Features Section -->
 <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Comment ça marche ?</h2>
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">{% trans "How does it work?" %}</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center p-6 hover-lift">
                 <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-shopping-cart text-3xl text-blue-600"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3">1. Achetez</h3>
-                <p class="text-gray-600">Chaque achat de chaussures vous rapporte <strong>1 point</strong> pour le classement mensuel.</p>
+                <h3 class="text-xl font-bold mb-3">{% trans "1. Buy" %}</h3>
+                <p class="text-gray-600">{% trans "Each shoe purchase earns you 1 point for the monthly ranking." %}</p>
             </div>
             
             <div class="text-center p-6 hover-lift">
                 <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-users text-3xl text-green-600"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3">2. Parrainez</h3>
-                <p class="text-gray-600">Parrainez des amis et gagnez <strong>1 point</strong> pour chaque inscription avec votre code.</p>
+                <h3 class="text-xl font-bold mb-3">{% trans "2. Refer" %}</h3>
+                <p class="text-gray-600">{% trans "Refer friends and earn 1 point for each signup with your code." %}</p>
             </div>
             
             <div class="text-center p-6 hover-lift">
                 <div class="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-trophy text-3xl text-yellow-600"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3">3. Gagnez</h3>
-                <p class="text-gray-600">Les <strong>10 premiers</strong> chaque mois gagnent des réductions exceptionnelles !</p>
+                <h3 class="text-xl font-bold mb-3">{% trans "3. Win" %}</h3>
+                <p class="text-gray-600">{% trans "The top 10 each month win exceptional discounts!" %}</p>
             </div>
         </div>
     </div>
@@ -58,8 +59,8 @@
 <!-- Top 3 Users Section -->
 <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Top 3 du Mois</h2>
-        <p class="text-gray-600 text-center mb-12">Nos meilleurs clients ce mois-ci</p>
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">{% trans "Top 3 of the Month" %}</h2>
+        <p class="text-gray-600 text-center mb-12">{% trans "Our best customers this month" %}</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {% for top_user in top_users %}
@@ -79,20 +80,20 @@
                 </div>
                 {% if forloop.first %}
                 <div class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
-                    <i class="fas fa-crown mr-1"></i>Leader
+                    <i class="fas fa-crown mr-1"></i>{% trans "Leader" %}
                 </div>
                 {% endif %}
             </div>
             {% empty %}
             <div class="col-span-3 text-center py-8">
-                <p class="text-gray-500 text-xl">Soyez le premier à gagner des points !</p>
+                <p class="text-gray-500 text-xl">{% trans "Be the first to earn points!" %}</p>
             </div>
             {% endfor %}
         </div>
         
         <div class="text-center mt-8">
             <a href="{% url 'leaderboard' %}" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold hover-lift">
-                <i class="fas fa-chart-bar mr-2"></i>Voir le Classement Complet
+                <i class="fas fa-chart-bar mr-2"></i>{% trans "View Full Ranking" %}
             </a>
         </div>
     </div>
@@ -101,8 +102,8 @@
 <!-- Featured Products -->
 <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Chaussures Populaires</h2>
-        <p class="text-gray-600 text-center mb-12">Découvrez nos meilleures ventes</p>
+        <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">{% trans "Popular Shoes" %}</h2>
+        <p class="text-gray-600 text-center mb-12">{% trans "Discover our bestsellers" %}</p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for product in featured_products %}
@@ -118,7 +119,7 @@
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xl font-semibold text-gray-800">{{ product.name }}</h3>
                         <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-2 py-1 rounded">
-                            Taille {{ product.size }}
+                            {% trans "Size" %} {{ product.size }}
                         </span>
                     </div>
                     <p class="text-gray-600 mb-2">{{ product.brand }}</p>
@@ -128,29 +129,29 @@
                         <div class="flex items-center space-x-2">
                             {% if product.stock > 0 %}
                             <span class="text-sm text-green-600">
-                                <i class="fas fa-check-circle mr-1"></i>En stock
+                                <i class="fas fa-check-circle mr-1"></i>{% trans "In stock" %}
                             </span>
                             <a href="{% url 'purchase_product' product.id %}" 
                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-                                Acheter
+                                {% trans "Buy" %}
                             </a>
                             {% else %}
                             <span class="text-sm text-red-600">
-                                <i class="fas fa-times-circle mr-1"></i>Rupture
+                                <i class="fas fa-times-circle mr-1"></i>{% trans "Out of stock" %}
                             </span>
                             <button class="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed" disabled>
-                                Indisponible
+                                {% trans "Unavailable" %}
                             </button>
                             {% endif %}
                         </div>
                     </div>
                     <div class="mt-3 flex justify-between items-center text-sm">
                         <span class="text-green-600 font-semibold">
-                            <i class="fas fa-coins mr-1"></i>1 point gagné
+                            <i class="fas fa-coins mr-1"></i>{% trans "1 point earned" %}
                         </span>
                         {% if product.stock > 0 and product.stock < 10 %}
                         <span class="text-orange-500 font-semibold">
-                            Plus que {{ product.stock }} disponible(s)
+                            {% trans "Only" %} {{ product.stock }} {% trans "available" %}
                         </span>
                         {% endif %}
                     </div>
@@ -159,14 +160,14 @@
             {% empty %}
             <div class="col-span-3 text-center py-12">
                 <i class="fas fa-shoe-prints text-6xl text-gray-300 mb-4"></i>
-                <p class="text-xl text-gray-500">Aucun produit disponible pour le moment.</p>
+                <p class="text-xl text-gray-500">{% trans "No products available at the moment." %}</p>
             </div>
             {% endfor %}
         </div>
         
         <div class="text-center mt-12">
             <a href="{% url 'products' %}" class="bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-900 transition font-semibold hover-lift">
-                <i class="fas fa-store mr-2"></i>Voir Tous les Produits
+                <i class="fas fa-store mr-2"></i>{% trans "View All Products" %}
             </a>
         </div>
     </div>
@@ -175,22 +176,22 @@
 <!-- CTA Section -->
 <section class="py-16 gradient-bg text-white">
     <div class="container mx-auto px-4 text-center">
-        <h2 class="text-4xl font-bold mb-4">Prêt à commencer ?</h2>
+        <h2 class="text-4xl font-bold mb-4">{% trans "Ready to start?" %}</h2>
         <p class="text-xl mb-8 max-w-2xl mx-auto">
-            Rejoignez notre communauté et commencez à gagner des points dès aujourd'hui !
+            {% trans "Join our community and start earning points today!" %}
         </p>
         {% if not user.is_authenticated %}
         <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
             <a href="{% url 'register' %}" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition hover-lift">
-                <i class="fas fa-user-plus mr-2"></i>Créer un Compte Gratuit
+                <i class="fas fa-user-plus mr-2"></i>{% trans "Create a Free Account" %}
             </a>
             <a href="{% url 'login' %}" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition hover-lift">
-                <i class="fas fa-sign-in-alt mr-2"></i>Se Connecter
+                <i class="fas fa-sign-in-alt mr-2"></i>{% trans "Sign In" %}
             </a>
         </div>
         {% else %}
         <div class="bg-white text-blue-600 inline-block px-8 py-4 rounded-lg font-semibold text-lg">
-            <i class="fas fa-check-circle mr-2"></i>Bienvenue {{ user.username }} ! Vous avez {{ user.points }} points.
+            <i class="fas fa-check-circle mr-2"></i>{% trans "Welcome" %} {{ user.username }}! {% trans "You have" %} {{ user.points }} {% trans "points" %}.
         </div>
         {% endif %}
     </div>

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Order Confirmed" %} - PointsShop{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg p-8 text-center">
+                <!-- Success Icon -->
+                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-check text-5xl text-green-600"></i>
+                </div>
+                
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">{% trans "Order Confirmed!" %}</h1>
+                <p class="text-gray-600 mb-6">{% trans "Thank you for your order. We will contact you soon to confirm delivery." %}</p>
+                
+                {% if order %}
+                <!-- Order Details -->
+                <div class="bg-gray-50 rounded-xl p-6 text-left mb-6">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-receipt text-blue-600 mr-2"></i>
+                        {% trans "Order Details" %}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">{% trans "Order Number" %}</p>
+                            <p class="font-bold text-blue-600 text-lg">{{ order.order_number }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">{% trans "Status" %}</p>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                <i class="fas fa-clock mr-1"></i> {% trans "Pending Confirmation" %}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">{% trans "Total" %}</p>
+                            <p class="font-bold text-gray-900">{{ order.total_price }} DA</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">{% trans "Date" %}</p>
+                            <p class="font-medium text-gray-700">{{ order.created_at|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h3 class="text-md font-bold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-truck text-orange-600 mr-2"></i>
+                        {% trans "Shipping Information" %}
+                    </h3>
+                    
+                    <div class="space-y-2 text-sm">
+                        <p><span class="text-gray-500">{% trans "Name" %}:</span> <span class="font-medium">{{ order.full_name }}</span></p>
+                        <p><span class="text-gray-500">{% trans "Phone" %}:</span> <span class="font-medium">{{ order.phone }}</span></p>
+                        <p><span class="text-gray-500">{% trans "Address" %}:</span> <span class="font-medium">{{ order.address }}</span></p>
+                        <p><span class="text-gray-500">{% trans "Commune" %}:</span> <span class="font-medium">{{ order.commune }}</span></p>
+                        <p><span class="text-gray-500">{% trans "Wilaya" %}:</span> <span class="font-medium">{{ order.get_wilaya_display_full }}</span></p>
+                        {% if order.postal_code %}
+                        <p><span class="text-gray-500">{% trans "Postal Code" %}:</span> <span class="font-medium">{{ order.postal_code }}</span></p>
+                        {% endif %}
+                    </div>
+                    
+                    {% if order.notes %}
+                    <hr class="my-4">
+                    <p class="text-sm"><span class="text-gray-500">{% trans "Notes" %}:</span> <span class="font-medium">{{ order.notes }}</span></p>
+                    {% endif %}
+                </div>
+                
+                <!-- Order Items -->
+                <div class="bg-gray-50 rounded-xl p-6 text-left mb-6">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-shopping-bag text-blue-600 mr-2"></i>
+                        {% trans "Items Ordered" %}
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        {% for item in order.items.all %}
+                        <div class="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
+                            <div class="flex items-center space-x-3">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-12 h-12 object-cover rounded-lg">
+                                {% else %}
+                                <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">{{ item.product.get_product_type_icon }}</span>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <p class="font-medium text-gray-900">{{ item.product.name }}</p>
+                                    <p class="text-sm text-gray-500">{{ item.quantity }} x {{ item.price }} DA</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Info Box -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="font-semibold text-blue-800">{% trans "What happens next?" %}</p>
+                            <ul class="text-sm text-blue-700 mt-2 space-y-1">
+                                <li>• {% trans "You will receive a call to confirm your order" %}</li>
+                                <li>• {% trans "Your order will be prepared and shipped" %}</li>
+                                <li>• {% trans "Pay when you receive your package (Cash on Delivery)" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{% url 'products' %}" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center space-x-2">
+                        <i class="fas fa-store"></i>
+                        <span>{% trans "Continue Shopping" %}</span>
+                    </a>
+                    <a href="{% url 'home' %}" class="bg-gray-200 text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center justify-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>{% trans "Home" %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

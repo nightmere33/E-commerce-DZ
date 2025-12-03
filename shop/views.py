@@ -8,19 +8,31 @@ from .forms import CustomUserCreationForm, CustomLoginForm
 from django.utils import translation
 from django.http import HttpResponseRedirect
 from django.db.models import Q, Sum
+from django.conf import settings
 
 
 def set_language_view(request, lang_code):
     if lang_code in ['fr', 'en', 'ar']:
         translation.activate(lang_code)
-        request.session[translation.LANGUAGE_SESSION_KEY] = lang_code
+        # Store the language preference in the session using Django's expected key
+        request.session['_language'] = lang_code
+        # Also mark the session as modified to ensure it's saved
+        request.session.modified = True
     
     # Redirect back to the previous page
     referer = request.META.get('HTTP_REFERER')
     if referer:
-        return HttpResponseRedirect(referer)
+        response = HttpResponseRedirect(referer)
     else:
-        return HttpResponseRedirect('/')
+        response = HttpResponseRedirect('/')
+    
+    # Also set the language cookie
+    response.set_cookie(
+        settings.LANGUAGE_COOKIE_NAME,
+        lang_code,
+        max_age=settings.LANGUAGE_COOKIE_AGE if hasattr(settings, 'LANGUAGE_COOKIE_AGE') else 31536000
+    )
+    return response
 
 
 

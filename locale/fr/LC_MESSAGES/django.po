@@ -1,1 +1,162 @@
-# French translations will go here
+# French translations for PointsShop
+msgid ""
+msgstr ""
+"Project-Id-Version: PointsShop 1.0\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Your Premium Shoe Store"
+msgstr "Votre Boutique de Chaussures Premium"
+
+msgid "Home"
+msgstr "Accueil"
+
+msgid "Shop"
+msgstr "Boutique"
+
+msgid "Leaderboard"
+msgstr "Classement"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Sign Up"
+msgstr "S'inscrire"
+
+msgid "Logout"
+msgstr "Déconnexion"
+
+msgid "Cart"
+msgstr "Panier"
+
+msgid "My Profile"
+msgstr "Mon Profil"
+
+msgid "Language"
+msgstr "Langue"
+
+msgid "pts"
+msgstr "pts"
+
+msgid "Your premium shoe store with an innovative points system. Buy, refer and earn rewards every month!"
+msgstr "Votre boutique de chaussures premium avec un système de points innovant. Achetez, parrainez et gagnez des récompenses chaque mois !"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Mon-Fri: 9am-6pm"
+msgstr "Lun-Ven: 9h-18h"
+
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
+
+msgid "Welcome to PointsShop"
+msgstr "Bienvenue sur PointsShop"
+
+msgid "Discover exceptional shoes and earn points with every purchase!"
+msgstr "Découvrez des chaussures exceptionnelles et gagnez des points à chaque achat !"
+
+msgid "Discover the Shop"
+msgstr "Découvrir la Boutique"
+
+msgid "Create an Account"
+msgstr "Créer un Compte"
+
+msgid "How does it work?"
+msgstr "Comment ça marche ?"
+
+msgid "1. Buy"
+msgstr "1. Achetez"
+
+msgid "Each shoe purchase earns you 1 point for the monthly ranking."
+msgstr "Chaque achat de chaussures vous rapporte 1 point pour le classement mensuel."
+
+msgid "2. Refer"
+msgstr "2. Parrainez"
+
+msgid "Refer friends and earn 1 point for each signup with your code."
+msgstr "Parrainez des amis et gagnez 1 point pour chaque inscription avec votre code."
+
+msgid "3. Win"
+msgstr "3. Gagnez"
+
+msgid "The top 10 each month win exceptional discounts!"
+msgstr "Les 10 premiers chaque mois gagnent des réductions exceptionnelles !"
+
+msgid "Top 3 of the Month"
+msgstr "Top 3 du Mois"
+
+msgid "Our best customers this month"
+msgstr "Nos meilleurs clients ce mois-ci"
+
+msgid "Leader"
+msgstr "Leader"
+
+msgid "Be the first to earn points!"
+msgstr "Soyez le premier à gagner des points !"
+
+msgid "View Full Ranking"
+msgstr "Voir le Classement Complet"
+
+msgid "Popular Shoes"
+msgstr "Chaussures Populaires"
+
+msgid "Discover our bestsellers"
+msgstr "Découvrez nos meilleures ventes"
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "In stock"
+msgstr "En stock"
+
+msgid "Buy"
+msgstr "Acheter"
+
+msgid "Out of stock"
+msgstr "Rupture"
+
+msgid "Unavailable"
+msgstr "Indisponible"
+
+msgid "1 point earned"
+msgstr "1 point gagné"
+
+msgid "Only"
+msgstr "Plus que"
+
+msgid "available"
+msgstr "disponible(s)"
+
+msgid "No products available at the moment."
+msgstr "Aucun produit disponible pour le moment."
+
+msgid "View All Products"
+msgstr "Voir Tous les Produits"
+
+msgid "Ready to start?"
+msgstr "Prêt à commencer ?"
+
+msgid "Join our community and start earning points today!"
+msgstr "Rejoignez notre communauté et commencez à gagner des points dès aujourd'hui !"
+
+msgid "Create a Free Account"
+msgstr "Créer un Compte Gratuit"
+
+msgid "Sign In"
+msgstr "Se Connecter"
+
+msgid "Welcome"
+msgstr "Bienvenue"
+
+msgid "You have"
+msgstr "Vous avez"
+
+msgid "points"
+msgstr "points"
