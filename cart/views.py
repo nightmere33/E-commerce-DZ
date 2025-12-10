@@ -110,7 +110,10 @@ def checkout(request):
     # Get wilaya choices for the form
     wilaya_choices = Order.WILAYA_CHOICES
     
-    # Generate CAPTCHA
+    # Check if reCAPTCHA is configured
+    recaptcha_site_key = getattr(settings, 'RECAPTCHA_SITE_KEY', '')
+    
+    # Generate math CAPTCHA as fallback
     import random
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
@@ -120,6 +123,7 @@ def checkout(request):
     return render(request, 'cart/checkout.html', {
         'cart': cart,
         'wilaya_choices': wilaya_choices,
+        'recaptcha_site_key': recaptcha_site_key,
         'captcha_num1': num1,
         'captcha_num2': num2,
     })
@@ -159,18 +163,40 @@ def confirm_order(request):
     if not address:
         errors.append("L'adresse est obligatoire.")
     
-    # Verify CAPTCHA
-    captcha_answer = request.session.get('captcha_answer')
-    if not captcha_input:
-        errors.append("Veuillez résoudre le captcha.")
-    elif captcha_answer is None:
-        errors.append("Session expirée. Veuillez réessayer.")
+    # Verify CAPTCHA (reCAPTCHA or math fallback)
+    recaptcha_site_key = getattr(settings, 'RECAPTCHA_SITE_KEY', '')
+    recaptcha_secret_key = getattr(settings, 'RECAPTCHA_SECRET_KEY', '')
+    
+    if recaptcha_site_key and recaptcha_secret_key:
+        # Verify Google reCAPTCHA
+        recaptcha_response = request.POST.get('g-recaptcha-response', '')
+        if not recaptcha_response:
+            errors.append("Veuillez cocher la case 'Je ne suis pas un robot'.")
+        else:
+            import requests
+            verify_url = 'https://www.google.com/recaptcha/api/siteverify'
+            try:
+                verify_response = requests.post(verify_url, data={
+                    'secret': recaptcha_secret_key,
+                    'response': recaptcha_response
+                }, timeout=5)
+                if not verify_response.json().get('success', False):
+                    errors.append("La vérification reCAPTCHA a échoué. Veuillez réessayer.")
+            except:
+                errors.append("Erreur de vérification. Veuillez réessayer.")
     else:
-        try:
-            if int(captcha_input) != captcha_answer:
-                errors.append("Réponse captcha incorrecte.")
-        except ValueError:
-            errors.append("Réponse captcha invalide.")
+        # Fallback to math CAPTCHA
+        captcha_answer = request.session.get('captcha_answer')
+        if not captcha_input:
+            errors.append("Veuillez résoudre le captcha.")
+        elif captcha_answer is None:
+            errors.append("Session expirée. Veuillez réessayer.")
+        else:
+            try:
+                if int(captcha_input) != captcha_answer:
+                    errors.append("Réponse captcha incorrecte.")
+            except ValueError:
+                errors.append("Réponse captcha invalide.")
     
     if errors:
         wilaya_choices = Order.WILAYA_CHOICES
@@ -184,6 +210,7 @@ def confirm_order(request):
             'wilaya_choices': wilaya_choices,
             'errors': errors,
             'form_data': request.POST,
+            'recaptcha_site_key': recaptcha_site_key,
             'captcha_num1': num1,
             'captcha_num2': num2,
         })

@@ -155,3 +155,9 @@ DEBUG = True
 # Stripe settings (use environment variables for keys)
 STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+
+# Google reCAPTCHA settings
+# Get your keys at: https://www.google.com/recaptcha/admin
+# Use reCAPTCHA v2 "I'm not a robot" Checkbox
+RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY', '6LfULycsAAAAACKLv-uCFX8_h1B0ImWDrOdJ15nv')
+RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY', '6LfULycsAAAAANgleCLjLqwTuKPKc4ZZpetq6fD2')
