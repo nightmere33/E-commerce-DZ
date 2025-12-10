@@ -29,9 +29,63 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'total_price', 'status', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('user__username',)
+    list_display = ('order_number', 'full_name', 'phone', 'wilaya', 'total_price', 'status', 'created_at')
+    list_filter = ('status', 'wilaya', 'created_at')
+    search_fields = ('order_number', 'full_name', 'phone', 'address', 'commune')
+    list_editable = ('status',)
+    readonly_fields = ('order_number', 'created_at', 'updated_at', 'user')
+    ordering = ('-created_at',)
+    
+    fieldsets = (
+        ('Order Info', {
+            'fields': ('order_number', 'user', 'status', 'total_price')
+        }),
+        ('Customer Info', {
+            'fields': ('full_name', 'phone')
+        }),
+        ('Shipping Address', {
+            'fields': ('wilaya', 'commune', 'address', 'postal_code')
+        }),
+        ('Additional Info', {
+            'fields': ('notes', 'created_at', 'updated_at')
+        }),
+    )
+
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ('product', 'quantity', 'price')
+
+
+# Re-register Order with inline items
+admin.site.unregister(Order)
+
+
+@admin.register(Order)
+class OrderAdminWithItems(admin.ModelAdmin):
+    list_display = ('order_number', 'full_name', 'phone', 'wilaya', 'total_price', 'status', 'created_at')
+    list_filter = ('status', 'wilaya', 'created_at')
+    search_fields = ('order_number', 'full_name', 'phone', 'address', 'commune')
+    list_editable = ('status',)
+    readonly_fields = ('order_number', 'created_at', 'updated_at', 'user')
+    ordering = ('-created_at',)
+    inlines = [OrderItemInline]
+    
+    fieldsets = (
+        ('Order Info', {
+            'fields': ('order_number', 'user', 'status', 'total_price')
+        }),
+        ('Customer Info', {
+            'fields': ('full_name', 'phone')
+        }),
+        ('Shipping Address', {
+            'fields': ('wilaya', 'commune', 'address', 'postal_code')
+        }),
+        ('Additional Info', {
+            'fields': ('notes', 'created_at', 'updated_at')
+        }),
+    )
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):

@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ current_language }}" {% if current_language == 'ar' %}dir="rtl"{% endif %}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PointsShop - Votre boutique de chaussures{% endblock %}</title>
+    <title>{% block title %}PointsShop - {% trans "Your Premium Shoe Store" %}{% endblock %}</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -62,13 +63,13 @@
                 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Accueil</a>
-                    <a href="{% url 'products' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Boutique</a>
-                    <a href="{% url 'leaderboard' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Classement</a>
+                    <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">{% trans "Home" %}</a>
+                    <a href="{% url 'products' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">{% trans "Shop" %}</a>
+                    <a href="{% url 'leaderboard' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">{% trans "Leaderboard" %}</a>
                     
                     <!-- Language Switcher -->
                     <div class="relative group">
-                        <button class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 font-medium transition">
+                        <button class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 font-medium transition py-2 cursor-pointer">
                             <i class="fas fa-globe"></i>
                             <span class="uppercase">
                                 {% if current_language == 'fr' %}FR
@@ -78,19 +79,33 @@
                             </span>
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
-                        <div class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-50 border">
-                            <a href="{% url 'set_language' 'fr' %}" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if current_language == 'fr' %}bg-blue-50 text-blue-600{% endif %}">
-                                🇫🇷 Français
-                            </a>
-                            <a href="{% url 'set_language' 'en' %}" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if current_language == 'en' %}bg-blue-50 text-blue-600{% endif %}">
-                                🇬🇧 English
-                            </a>
-                            <a href="{% url 'set_language' 'ar' %}" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 {% if current_language == 'ar' %}bg-blue-50 text-blue-600{% endif %}">
-                                🇸🇦 العربية
-                            </a>
+                        <div class="absolute right-0 top-full w-32 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 z-[100]">
+                            <div class="bg-white rounded-lg shadow-lg py-2 border mt-1">
+                                <form action="{% url 'set_language' %}" method="post" id="lang-form-fr">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="language" value="fr">
+                                    <input type="hidden" name="next" value="/fr{{ path_without_lang }}">
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer {% if current_language == 'fr' %}bg-blue-50 text-blue-600{% endif %}">
+                                        🇫🇷 Français
+                                    </button>
+                                </form>
+                                <form action="{% url 'set_language' %}" method="post" id="lang-form-en">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="language" value="en">
+                                    <input type="hidden" name="next" value="/en{{ path_without_lang }}">
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer {% if current_language == 'en' %}bg-blue-50 text-blue-600{% endif %}">
+                                        🇬🇧 English
+                                    </button>
+                                </form>
+                                <form action="{% url 'set_language' %}" method="post" id="lang-form-ar">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="language" value="ar">
+                                    <input type="hidden" name="next" value="/ar{{ path_without_lang }}">
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer {% if current_language == 'ar' %}bg-blue-50 text-blue-600{% endif %}">
+                                        🇸🇦 العربية
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     
@@ -120,9 +135,9 @@
                         </div>
                     {% else %}
                         <div class="flex items-center space-x-4">
-                            <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">Connexion</a>
+                            <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium transition">{% trans "Login" %}</a>
                             <a href="{% url 'register' %}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium hover-lift">
-                                S'inscrire
+                                {% trans "Sign Up" %}
                             </a>
                         </div>
                     {% endif %}
@@ -152,28 +167,43 @@
                 <!-- Navigation Links -->
                 <div class="space-y-6">
                     <a href="{% url 'home' %}" class="block text-gray-700 hover:text-blue-600 font-medium transition py-2 border-b border-gray-100">
-                        <i class="fas fa-home mr-3"></i>Accueil
+                        <i class="fas fa-home mr-3"></i>{% trans "Home" %}
                     </a>
                     <a href="{% url 'products' %}" class="block text-gray-700 hover:text-blue-600 font-medium transition py-2 border-b border-gray-100">
-                        <i class="fas fa-store mr-3"></i>Boutique
+                        <i class="fas fa-store mr-3"></i>{% trans "Shop" %}
                     </a>
                     <a href="{% url 'leaderboard' %}" class="block text-gray-700 hover:text-blue-600 font-medium transition py-2 border-b border-gray-100">
-                        <i class="fas fa-chart-bar mr-3"></i>Classement
+                        <i class="fas fa-chart-bar mr-3"></i>{% trans "Leaderboard" %}
                     </a>
 
                     <!-- Language Switcher Mobile -->
                     <div class="border-b border-gray-100 pb-4">
-                        <p class="text-sm text-gray-500 mb-2">Langue</p>
+                        <p class="text-sm text-gray-500 mb-2">{% trans "Language" %}</p>
                         <div class="flex space-x-2">
-                            <a href="{% url 'set_language' 'fr' %}" class="flex-1 text-center px-3 py-2 text-sm {% if current_language == 'fr' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
-                                FR
-                            </a>
-                            <a href="{% url 'set_language' 'en' %}" class="flex-1 text-center px-3 py-2 text-sm {% if current_language == 'en' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
-                                EN
-                            </a>
-                            <a href="{% url 'set_language' 'ar' %}" class="flex-1 text-center px-3 py-2 text-sm {% if current_language == 'ar' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
-                                AR
-                            </a>
+                            <form action="{% url 'set_language' %}" method="post" class="flex-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="language" value="fr">
+                                <input type="hidden" name="next" value="/fr{{ path_without_lang }}">
+                                <button type="submit" class="w-full text-center px-3 py-2 text-sm {% if current_language == 'fr' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
+                                    FR
+                                </button>
+                            </form>
+                            <form action="{% url 'set_language' %}" method="post" class="flex-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="language" value="en">
+                                <input type="hidden" name="next" value="/en{{ path_without_lang }}">
+                                <button type="submit" class="w-full text-center px-3 py-2 text-sm {% if current_language == 'en' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
+                                    EN
+                                </button>
+                            </form>
+                            <form action="{% url 'set_language' %}" method="post" class="flex-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="language" value="ar">
+                                <input type="hidden" name="next" value="/ar{{ path_without_lang }}">
+                                <button type="submit" class="w-full text-center px-3 py-2 text-sm {% if current_language == 'ar' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700{% endif %} rounded transition">
+                                    AR
+                                </button>
+                            </form>
                         </div>
                     </div>
 
@@ -185,26 +215,26 @@
                             <span class="font-semibold text-blue-700">{{ user.points }} pts</span>
                         </div>
                         <a href="{% url 'cart' %}" class="flex items-center text-gray-700 hover:text-blue-600 transition py-2">
-                            <i class="fas fa-shopping-cart mr-3"></i>Panier
+                            <i class="fas fa-shopping-cart mr-3"></i>{% trans "Cart" %}
                             <span class="ml-auto bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="mobile-cart-count">0</span>
                         </a>
                         <a href="{% url 'profile' %}" class="flex items-center text-gray-700 hover:text-blue-600 transition py-2">
-                            <i class="fas fa-user-circle mr-3"></i>Mon Profil
+                            <i class="fas fa-user-circle mr-3"></i>{% trans "My Profile" %}
                         </a>
                         <form method="post" action="{% url 'logout' %}" class="inline">
                             {% csrf_token %}
                             <button type="submit" class="flex items-center w-full text-gray-700 hover:text-blue-600 transition py-2">
-                                <i class="fas fa-sign-out-alt mr-3"></i>Déconnexion
+                                <i class="fas fa-sign-out-alt mr-3"></i>{% trans "Logout" %}
                             </button>
                         </form>
                     </div>
                     {% else %}
                     <div class="space-y-3 border-b border-gray-100 pb-4">
                         <a href="{% url 'login' %}" class="block w-full text-center bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200 transition font-medium">
-                            Connexion
+                            {% trans "Login" %}
                         </a>
                         <a href="{% url 'register' %}" class="block w-full text-center bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium">
-                            S'inscrire
+                            {% trans "Sign Up" %}
                         </a>
                     </div>
                     {% endif %}
@@ -258,8 +288,7 @@
                         <span class="text-2xl font-bold">PointsShop</span>
                     </div>
                     <p class="text-gray-300 mb-4 max-w-md">
-                        Votre boutique de chaussures premium avec système de points innovant. 
-                        Achetez, parrainez et gagnez des récompenses chaque mois !
+                        {% trans "Your premium shoe store with an innovative points system. Buy, refer and earn rewards every month!" %}
                     </p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-300 hover:text-white transition">
@@ -276,21 +305,21 @@
                 
                 <!-- Quick Links -->
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Navigation</h4>
+                    <h4 class="font-bold text-lg mb-4">{% trans "Navigation" %}</h4>
                     <ul class="space-y-2 text-gray-300">
-                        <li><a href="{% url 'home' %}" class="hover:text-white transition">Accueil</a></li>
-                        <li><a href="{% url 'products' %}" class="hover:text-white transition">Boutique</a></li>
-                        <li><a href="{% url 'leaderboard' %}" class="hover:text-white transition">Classement</a></li>
+                        <li><a href="{% url 'home' %}" class="hover:text-white transition">{% trans "Home" %}</a></li>
+                        <li><a href="{% url 'products' %}" class="hover:text-white transition">{% trans "Shop" %}</a></li>
+                        <li><a href="{% url 'leaderboard' %}" class="hover:text-white transition">{% trans "Leaderboard" %}</a></li>
                         {% if not user.is_authenticated %}
-                        <li><a href="{% url 'login' %}" class="hover:text-white transition">Connexion</a></li>
-                        <li><a href="{% url 'register' %}" class="hover:text-white transition">Inscription</a></li>
+                        <li><a href="{% url 'login' %}" class="hover:text-white transition">{% trans "Login" %}</a></li>
+                        <li><a href="{% url 'register' %}" class="hover:text-white transition">{% trans "Sign Up" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
                 
                 <!-- Contact & Info -->
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <h4 class="font-bold text-lg mb-4">{% trans "Contact" %}</h4>
                     <div class="space-y-2 text-gray-300">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-envelope text-blue-400"></i>
@@ -302,7 +331,7 @@
                         </div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-clock text-blue-400"></i>
-                            <span>Lun-Ven: 9h-18h</span>
+                            <span>{% trans "Mon-Fri: 9am-6pm" %}</span>
                         </div>
                     </div>
                 </div>
@@ -310,7 +339,7 @@
             
             <!-- Copyright -->
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 PointsShop. Tous droits réservés. | Système de points innovant</p>
+                <p>&copy; 2024 PointsShop. {% trans "All rights reserved." %} | {% trans "Innovative points system" %}</p>
             </div>
         </div>
     </footer>

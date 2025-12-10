@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Checkout" %} - PointsShop{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm text-gray-600">
+                <li><a href="{% url 'home' %}" class="hover:text-blue-600 transition">{% trans "Home" %}</a></li>
+                <li class="flex items-center">
+                    <i class="fas fa-chevron-right text-xs mx-2"></i>
+                    <a href="{% url 'cart' %}" class="hover:text-blue-600 transition">{% trans "Cart" %}</a>
+                </li>
+                <li class="flex items-center">
+                    <i class="fas fa-chevron-right text-xs mx-2"></i>
+                    <span class="text-gray-900 font-medium">{% trans "Checkout" %}</span>
+                </li>
+            </ol>
+        </nav>
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">{% trans "Finalize Your Order" %}</h1>
+
+        {% if errors %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <strong>{% trans "Please correct the following errors:" %}</strong>
+            </div>
+            <ul class="list-disc list-inside">
+                {% for error in errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'confirm_order' %}" id="checkout-form">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Shipping Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Personal Information -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-user text-blue-600 mr-3"></i>
+                            {% trans "Personal Information" %}
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="full_name">
+                                    {% trans "Full Name" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="full_name" name="full_name" 
+                                       value="{{ form_data.full_name|default:'' }}"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                       placeholder="{% trans 'Enter your full name' %}" required>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="phone">
+                                    {% trans "Phone Number" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" id="phone" name="phone" 
+                                       value="{{ form_data.phone|default:'' }}"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                       placeholder="0550 00 00 00" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-600 mr-3"></i>
+                            {% trans "Shipping Address" %}
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="wilaya">
+                                    {% trans "Wilaya" %} <span class="text-red-500">*</span>
+                                </label>
+                                <select id="wilaya" name="wilaya" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                        required>
+                                    <option value="">-- {% trans "Select Wilaya" %} --</option>
+                                    {% for code, name in wilaya_choices %}
+                                    <option value="{{ code }}" {% if form_data.wilaya == code %}selected{% endif %}>{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="commune">
+                                    {% trans "Commune" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="commune" name="commune" 
+                                       value="{{ form_data.commune|default:'' }}"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                       placeholder="{% trans 'Enter your commune' %}" required>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="address">
+                                    {% trans "Full Address" %} <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="address" name="address" rows="3"
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                          placeholder="{% trans 'Street, building number, apartment...' %}" required>{{ form_data.address|default:'' }}</textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="postal_code">
+                                    {% trans "Postal Code" %} <span class="text-gray-400">({% trans "optional" %})</span>
+                                </label>
+                                <input type="text" id="postal_code" name="postal_code" 
+                                       value="{{ form_data.postal_code|default:'' }}"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                       placeholder="16000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Notes -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-sticky-note text-blue-600 mr-3"></i>
+                            {% trans "Delivery Notes" %} <span class="text-gray-400 text-sm font-normal ml-2">({% trans "optional" %})</span>
+                        </h2>
+                        
+                        <textarea id="notes" name="notes" rows="3"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                  placeholder="{% trans 'Any special instructions for delivery...' %}">{{ form_data.notes|default:'' }}</textarea>
+                    </div>
+
+                    <!-- CAPTCHA Verification -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i class="fas fa-shield-alt text-blue-600 mr-3"></i>
+                            {% trans "Security Verification" %}
+                        </h2>
+                        
+                        {% if recaptcha_site_key %}
+                        <!-- Google reCAPTCHA -->
+                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            {% trans "Please check the box above to verify you're human" %}
+                        </p>
+                        {% else %}
+                        <!-- Math CAPTCHA fallback -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                                {% trans "Solve this to prove you're human" %} <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold text-xl select-none">
+                                    {{ captcha_num1 }} + {{ captcha_num2 }} = ?
+                                </div>
+                                <input type="number" id="captcha" name="captcha" 
+                                       class="w-24 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-center text-xl font-bold"
+                                       placeholder="?" required min="0" max="100">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                {% trans "Enter the result of the calculation above" %}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-lg p-6 sticky top-4">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">
+                            {% trans "Order Summary" %}
+                        </h2>
+                        
+                        <!-- Cart Items -->
+                        <div class="space-y-4 mb-6 max-h-64 overflow-y-auto">
+                            {% for item in cart.items.all %}
+                            <div class="flex items-center space-x-3">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                     class="w-16 h-16 object-cover rounded-lg">
+                                {% else %}
+                                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-2xl">{{ item.product.get_product_type_icon }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">{{ item.product.name }}</p>
+                                    <p class="text-xs text-gray-500">{{ item.quantity }} x {{ item.product.price }} DA</p>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-900">{{ item.total_price }} DA</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Pricing -->
+                        <div class="space-y-3 border-t border-gray-200 pt-4">
+                            <div class="flex justify-between text-gray-600">
+                                <span>{% trans "Subtotal" %}</span>
+                                <span>{{ cart.total_price }} DA</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <span>{% trans "Shipping" %}</span>
+                                <span class="text-green-600 font-semibold">{% trans "Cash on Delivery" %}</span>
+                            </div>
+                            <div class="border-t border-gray-200 pt-3">
+                                <div class="flex justify-between text-lg font-bold text-gray-900">
+                                    <span>{% trans "Total" %}</span>
+                                    <span class="text-blue-600">{{ cart.total_price }} DA</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Yalidine Badge -->
+                        <div class="mt-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-4 text-white">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-truck text-2xl"></i>
+                                <div>
+                                    <p class="font-semibold">{% trans "Home Delivery" %}</p>
+                                    <p class="text-orange-100 text-sm">{% trans "Payment on delivery" %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Confirm Button -->
+                        <button type="submit" 
+                                class="w-full mt-6 bg-gradient-to-r from-green-600 to-green-700 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-3">
+                            <i class="fas fa-check-circle"></i>
+                            <span>{% trans "Confirm Order" %}</span>
+                        </button>
+                        
+                        <!-- Security -->
+                        <p class="mt-4 text-center text-xs text-gray-500">
+                            <i class="fas fa-lock text-green-500 mr-1"></i>
+                            {% trans "Your information is secure" %}
+                        </p>
+                        
+                        <!-- Back to Cart -->
+                        <a href="{% url 'cart' %}" 
+                           class="w-full mt-4 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition flex items-center justify-center space-x-2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>{% trans "Back to Cart" %}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if recaptcha_site_key %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endif %}
+{% endblock %}

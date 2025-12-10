@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Panier - PointsShop{% endblock %}
+{% block title %}{% trans "Cart" %} - PointsShop{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-gray-50 py-8">
@@ -142,11 +143,11 @@
                 </div>
                 
                 <!-- Checkout Button -->
-                <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-3">
+                <a href="{% url 'checkout' %}" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-3">
                     <i class="fas fa-lock"></i>
-                    <span>Procéder au paiement</span>
+                    <span>{% trans "Proceed to Checkout" %}</span>
                     <i class="fas fa-arrow-right"></i>
-                </button>
+                </a>
                 
                 <!-- Security Badge -->
                 <div class="mt-4 text-center">

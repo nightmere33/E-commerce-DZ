@@ -137,20 +137,106 @@ class Product(models.Model):
 
 class Order(models.Model):
     STATUS_CHOICES = [
-        ('new', 'Nouvelle'),
+        ('pending', 'En attente'),
+        ('confirmed', 'Confirmée'),
         ('preparation', 'En préparation'),
-        ('sent', 'Envoyée'),
+        ('shipped', 'Expédiée'),
         ('delivered', 'Livrée'),
+        ('cancelled', 'Annulée'),
+    ]
+    
+    WILAYA_CHOICES = [
+        ('01', '01 - Adrar'),
+        ('02', '02 - Chlef'),
+        ('03', '03 - Laghouat'),
+        ('04', '04 - Oum El Bouaghi'),
+        ('05', '05 - Batna'),
+        ('06', '06 - Béjaïa'),
+        ('07', '07 - Biskra'),
+        ('08', '08 - Béchar'),
+        ('09', '09 - Blida'),
+        ('10', '10 - Bouira'),
+        ('11', '11 - Tamanrasset'),
+        ('12', '12 - Tébessa'),
+        ('13', '13 - Tlemcen'),
+        ('14', '14 - Tiaret'),
+        ('15', '15 - Tizi Ouzou'),
+        ('16', '16 - Alger'),
+        ('17', '17 - Djelfa'),
+        ('18', '18 - Jijel'),
+        ('19', '19 - Sétif'),
+        ('20', '20 - Saïda'),
+        ('21', '21 - Skikda'),
+        ('22', '22 - Sidi Bel Abbès'),
+        ('23', '23 - Annaba'),
+        ('24', '24 - Guelma'),
+        ('25', '25 - Constantine'),
+        ('26', '26 - Médéa'),
+        ('27', '27 - Mostaganem'),
+        ('28', '28 - M\'Sila'),
+        ('29', '29 - Mascara'),
+        ('30', '30 - Ouargla'),
+        ('31', '31 - Oran'),
+        ('32', '32 - El Bayadh'),
+        ('33', '33 - Illizi'),
+        ('34', '34 - Bordj Bou Arreridj'),
+        ('35', '35 - Boumerdès'),
+        ('36', '36 - El Tarf'),
+        ('37', '37 - Tindouf'),
+        ('38', '38 - Tissemsilt'),
+        ('39', '39 - El Oued'),
+        ('40', '40 - Khenchela'),
+        ('41', '41 - Souk Ahras'),
+        ('42', '42 - Tipaza'),
+        ('43', '43 - Mila'),
+        ('44', '44 - Aïn Defla'),
+        ('45', '45 - Naâma'),
+        ('46', '46 - Aïn Témouchent'),
+        ('47', '47 - Ghardaïa'),
+        ('48', '48 - Relizane'),
+        ('49', '49 - El M\'Ghair'),
+        ('50', '50 - El Meniaa'),
+        ('51', '51 - Ouled Djellal'),
+        ('52', '52 - Bordj Badji Mokhtar'),
+        ('53', '53 - Béni Abbès'),
+        ('54', '54 - Timimoun'),
+        ('55', '55 - Touggourt'),
+        ('56', '56 - Djanet'),
+        ('57', '57 - In Salah'),
+        ('58', '58 - In Guezzam'),
     ]
     
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    # Shipping information (Yalidine style)
+    full_name = models.CharField(max_length=200, blank=True, default='')
+    phone = models.CharField(max_length=20, blank=True, default='')
+    phone2 = models.CharField(max_length=20, blank=True, null=True)  # Secondary phone
+    wilaya = models.CharField(max_length=2, choices=WILAYA_CHOICES, blank=True, default='')
+    commune = models.CharField(max_length=100, blank=True, default='')
+    address = models.TextField(blank=True, default='')
+    postal_code = models.CharField(max_length=10, blank=True, default='')
+    notes = models.TextField(blank=True, null=True)  # Delivery notes
+    
+    # Order tracking
+    order_number = models.CharField(max_length=20, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            # Generate unique order number
+            import random
+            self.order_number = f"CMD{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
+    
+    def get_wilaya_display_full(self):
+        return dict(self.WILAYA_CHOICES).get(self.wilaya, self.wilaya)
+    
     def __str__(self):
-        return f"Order #{self.id} - {self.user.username}"
+        return f"Order #{self.order_number} - {self.full_name}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

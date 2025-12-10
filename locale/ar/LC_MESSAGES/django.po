@@ -1,0 +1,162 @@
+# Arabic translations for PointsShop
+msgid ""
+msgstr ""
+"Project-Id-Version: PointsShop 1.0\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+msgid "Your Premium Shoe Store"
+msgstr "متجرك المميز للأحذية"
+
+msgid "Home"
+msgstr "الرئيسية"
+
+msgid "Shop"
+msgstr "المتجر"
+
+msgid "Leaderboard"
+msgstr "الترتيب"
+
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgid "Sign Up"
+msgstr "إنشاء حساب"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Cart"
+msgstr "السلة"
+
+msgid "My Profile"
+msgstr "ملفي الشخصي"
+
+msgid "Language"
+msgstr "اللغة"
+
+msgid "pts"
+msgstr "نقاط"
+
+msgid "Your premium shoe store with an innovative points system. Buy, refer and earn rewards every month!"
+msgstr "متجرك المميز للأحذية مع نظام نقاط مبتكر. اشترِ، أحضر أصدقاءك واربح مكافآت كل شهر!"
+
+msgid "Navigation"
+msgstr "التنقل"
+
+msgid "Contact"
+msgstr "اتصل بنا"
+
+msgid "Mon-Fri: 9am-6pm"
+msgstr "الاثنين-الجمعة: 9ص-6م"
+
+msgid "All rights reserved."
+msgstr "جميع الحقوق محفوظة."
+
+msgid "Welcome to PointsShop"
+msgstr "مرحباً بك في PointsShop"
+
+msgid "Discover exceptional shoes and earn points with every purchase!"
+msgstr "اكتشف أحذية استثنائية واكسب نقاطاً مع كل عملية شراء!"
+
+msgid "Discover the Shop"
+msgstr "اكتشف المتجر"
+
+msgid "Create an Account"
+msgstr "إنشاء حساب"
+
+msgid "How does it work?"
+msgstr "كيف يعمل؟"
+
+msgid "1. Buy"
+msgstr "1. اشترِ"
+
+msgid "Each shoe purchase earns you 1 point for the monthly ranking."
+msgstr "كل عملية شراء للأحذية تمنحك نقطة واحدة للترتيب الشهري."
+
+msgid "2. Refer"
+msgstr "2. ادعُ أصدقاءك"
+
+msgid "Refer friends and earn 1 point for each signup with your code."
+msgstr "ادعُ أصدقاءك واكسب نقطة واحدة لكل تسجيل بكودك."
+
+msgid "3. Win"
+msgstr "3. اربح"
+
+msgid "The top 10 each month win exceptional discounts!"
+msgstr "أفضل 10 كل شهر يفوزون بخصومات استثنائية!"
+
+msgid "Top 3 of the Month"
+msgstr "أفضل 3 هذا الشهر"
+
+msgid "Our best customers this month"
+msgstr "أفضل عملائنا هذا الشهر"
+
+msgid "Leader"
+msgstr "الأول"
+
+msgid "Be the first to earn points!"
+msgstr "كن أول من يكسب النقاط!"
+
+msgid "View Full Ranking"
+msgstr "عرض الترتيب الكامل"
+
+msgid "Popular Shoes"
+msgstr "الأحذية الأكثر شعبية"
+
+msgid "Discover our bestsellers"
+msgstr "اكتشف الأكثر مبيعاً"
+
+msgid "Size"
+msgstr "المقاس"
+
+msgid "In stock"
+msgstr "متوفر"
+
+msgid "Buy"
+msgstr "شراء"
+
+msgid "Out of stock"
+msgstr "نفذ المخزون"
+
+msgid "Unavailable"
+msgstr "غير متوفر"
+
+msgid "1 point earned"
+msgstr "نقطة واحدة مكتسبة"
+
+msgid "Only"
+msgstr "فقط"
+
+msgid "available"
+msgstr "متوفر"
+
+msgid "No products available at the moment."
+msgstr "لا توجد منتجات متاحة حالياً."
+
+msgid "View All Products"
+msgstr "عرض جميع المنتجات"
+
+msgid "Ready to start?"
+msgstr "مستعد للبدء؟"
+
+msgid "Join our community and start earning points today!"
+msgstr "انضم إلى مجتمعنا وابدأ في كسب النقاط اليوم!"
+
+msgid "Create a Free Account"
+msgstr "إنشاء حساب مجاني"
+
+msgid "Sign In"
+msgstr "تسجيل الدخول"
+
+msgid "Welcome"
+msgstr "مرحباً"
+
+msgid "You have"
+msgstr "لديك"
+
+msgid "points"
+msgstr "نقاط"
